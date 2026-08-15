@@ -1,4 +1,4 @@
-"""Generate Logisim-evolution test vectors for the 32-register file."""
+"""Generate Logisim-evolution test vectors for the register file."""
 
 import argparse
 import random
@@ -11,21 +11,21 @@ from typing import TextIO
 MASK32 = 0xFFFFFFFF
 REGISTER_COUNT = 32
 ZERO_REGISTER = 0
-DEFAULT_COUNT = 256
+DEFAULT_COUNT = 1024
 DEFAULT_SEED = 20260808
-DEFAULT_OUTPUT = Path(__file__).parents[1] / "vectors" / "RegisterFile32Test.txt"
+DEFAULT_OUTPUT = Path(__file__).parents[1] / "vectors" / "RegisterFileTest.txt"
 
 
 @dataclass(frozen=True, slots=True)
 class Vector:
-    read_address_0: int
-    read_address_1: int
+    output_address_0: int
+    output_address_1: int
     write_enable: int
     write_address: int
     write_data: int
     clk: int
-    read_data_0: int
-    read_data_1: int
+    output_data_0: int
+    output_data_1: int
 
 
 def _validate_register(address: int) -> int:
@@ -47,14 +47,14 @@ def _make_vector(
     read_address_1 = _validate_register(read_address_1)
     write_address = _validate_register(write_address)
     return Vector(
-        read_address_0=read_address_0,
-        read_address_1=read_address_1,
+        output_address_0=read_address_0,
+        output_address_1=read_address_1,
         write_enable=write_enable,
         write_address=write_address,
         write_data=write_data & MASK32,
         clk=clk,
-        read_data_0=registers[read_address_0],
-        read_data_1=registers[read_address_1],
+        output_data_0=registers[read_address_0],
+        output_data_1=registers[read_address_1],
     )
 
 
@@ -137,10 +137,10 @@ def generate_vectors(count: int, rng: random.Random) -> list[Vector]:
 
 def format_vector(vector: Vector) -> str:
     return (
-        f"{vector.read_address_0:05b} {vector.read_address_1:05b} "
+        f"{vector.output_address_0:05b} {vector.output_address_1:05b} "
         f"{vector.write_enable} {vector.write_address:05b} "
         f"0x{vector.write_data:08X} {vector.clk} "
-        f"0x{vector.read_data_0:08X} 0x{vector.read_data_1:08X}"
+        f"0x{vector.output_data_0:08X} 0x{vector.output_data_1:08X}"
     )
 
 
@@ -156,9 +156,9 @@ def write_vectors(
         "# <set>/<seq> keep Logisim from resetting the circuit between rows.\n"
     )
     stream.write(
-        "read_address_0[5] read_address_1[5] write_enable[1] "
+        "output_address_0[5] output_address_1[5] write_enable[1] "
         "write_address[5] write_data[32] CLK[1] "
-        "read_data_0[32] read_data_1[32] <set> <seq>\n"
+        "output_data_0[32] output_data_1[32] <set> <seq>\n"
     )
     stream.writelines(
         f"{format_vector(vector)} 1 {seq}\n"
