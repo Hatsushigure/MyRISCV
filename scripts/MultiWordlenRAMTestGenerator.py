@@ -16,7 +16,7 @@ from enum import IntEnum
 from pathlib import Path
 from typing import TextIO
 
-DEFAULT_COUNT = 256
+DEFAULT_COUNT = 1024
 DEFAULT_SEED = 42
 DEFAULT_OUTPUT = Path(__file__).parents[1] / "vectors" / "MultiWordlenRAMTest.txt"
 RAM_SIZE = 1 << 26
@@ -45,7 +45,7 @@ ram: dict[int, int] = {}
 def generate_vectors(count: int) -> Generator[Vector]:
     for _ in range(count):
         width = random.choice(list(Width))
-        sign_extend = random.choice((True, False))
+        zero_extend = random.choice((True, False))
         output_enable = random.choices((True, False), (9, 1))[0]
         write_enable = random.choice((True, False))
         address = random.randint(0, RAM_SIZE - 1) & (0xFFFFFFFF << width)
@@ -53,7 +53,7 @@ def generate_vectors(count: int) -> Generator[Vector]:
         clk = False
         output_data = 0
         yield Vector(
-            funct3=width | (int(sign_extend) << 2),
+            funct3=width | (int(not zero_extend) << 2),
             output_enable=output_enable,
             write_enable=write_enable,
             address=address,
@@ -65,10 +65,21 @@ def generate_vectors(count: int) -> Generator[Vector]:
 
 def process_vectors(vectors: Iterable[Vector]) -> Generator[Vector]:
     for vector in vectors:
+        # All input before rise will be ignored
+        yield Vector(
+            funct3=random.randint(0, 7),
+            output_enable=random.choice((True, False)),
+            write_enable=random.choice((True, False)),
+            address=random.randint(0, RAM_SIZE - 1),
+            write_data=random.randint(0, 0xFFFFFFFF),
+            clk=False,
+            output_data=0,
+        )
+
         yield vector
 
         vector = dataclasses.replace(vector, clk=True)
-        sign_extend = (vector.funct3 >> 2) & 1
+        zero_extend = (vector.funct3 >> 2) & 1
         width = Width(vector.funct3 & 3)
         match width:
             case Width.EIGHT:
@@ -79,7 +90,7 @@ def process_vectors(vectors: Iterable[Vector]) -> Generator[Vector]:
                     vector = dataclasses.replace(
                         vector,
                         output_data=output_data
-                        | (sign_extend * (output_data >> 7) * 0xFFFFFF00),
+                        | (0 if zero_extend else (output_data >> 7) * 0xFFFFFF00),
                     )
             case Width.SIXTEEN:
                 if vector.write_enable:
@@ -92,7 +103,7 @@ def process_vectors(vectors: Iterable[Vector]) -> Generator[Vector]:
                     vector = dataclasses.replace(
                         vector,
                         output_data=output_data
-                        | (sign_extend * (output_data >> 15) * 0xFFFF0000),
+                        | (0 if zero_extend else (output_data >> 15) * 0xFFFF0000),
                     )
             case Width.THIRTY_TWO:
                 if vector.write_enable:
@@ -110,6 +121,18 @@ def process_vectors(vectors: Iterable[Vector]) -> Generator[Vector]:
                     vector = dataclasses.replace(vector, output_data=output_data)
 
         yield vector
+
+        # All input after rise will be ignored
+        yield Vector(
+            funct3=random.randint(0, 7),
+            output_enable=vector.output_enable,
+            write_enable=random.choice((True, False)),
+            address=random.randint(0, RAM_SIZE - 1),
+            write_data=random.randint(0, 0xFFFFFFFF),
+            clk=True,
+            output_data=vector.output_data,
+        )
+
 
 
 def format_vector(vector: Vector) -> str:
@@ -165,7 +188,7 @@ def main(argv: list[str] | None = None) -> int:
         with args.output.open("w", newline="\n") as stream:
             write_vectors(stream, vectors)
         print(
-            f"Generated {args.count * 2} vectors for {args.count} clock cycles "
+            f"Generated {args.count * 4} vectors for {args.count} clock cycles "
             f"in {args.output}"
         )
     return 0
