@@ -14,11 +14,12 @@ DEFAULT_COUNT = 1024
 DEFAULT_SEED = 42
 DEFAULT_OUTPUT = Path(__file__).parents[1] / "vectors" / "ALUControllerTest.txt"
 ALU_OPERATIONS = {
-    "LUI": 0b0110111,
     "LOAD": 0b0000011,
     "STORE": 0b0100011,
     "OP-IMM": 0b0010011,
     "OP": 0b0110011,
+    "AUIPC": 0b0010111,
+    "LUI": 0b0110111,
 }
 
 
@@ -30,6 +31,7 @@ class Vector:
     rs1_data: int
     rs2_data: int
     immediate: int
+    curr_pc: int
     special_bit: bool
     is_R: bool
     funct3: int
@@ -47,6 +49,7 @@ def generate_vectors(count: int, rng: random.Random) -> Generator[Vector]:
             rs1_data=rng.randint(0, 0xFFFFFFFF),
             rs2_data=rng.randint(0, 0xFFFFFFFF),
             immediate=rng.randint(0, 0xFFFFFFFF),
+            curr_pc=rng.randint(0, 0xFFFFFFFF),
             special_bit=bool((funct7 >> 5) & 1),
             is_R=True,
             funct3=0,
@@ -56,13 +59,29 @@ def generate_vectors(count: int, rng: random.Random) -> Generator[Vector]:
 
 
 def process_vector(vector: Vector) -> Vector:
-    if vector.opcode == ALU_OPERATIONS["LUI"]:
+    if vector.opcode == ALU_OPERATIONS["AUIPC"]:
         return dataclasses.replace(
-            vector, is_R=False, funct3=0, A=0, B=vector.immediate
+            vector,
+            is_R=False,
+            funct3=0,
+            A=vector.curr_pc,
+            B=vector.immediate,
+        )
+    elif vector.opcode == ALU_OPERATIONS["LUI"]:
+        return dataclasses.replace(
+            vector,
+            is_R=False,
+            funct3=0,
+            A=0,
+            B=vector.immediate,
         )
     elif vector.opcode in (ALU_OPERATIONS["LOAD"], ALU_OPERATIONS["STORE"]):
         return dataclasses.replace(
-            vector, is_R=False, funct3=0, A=vector.rs1_data, B=vector.immediate
+            vector,
+            is_R=False,
+            funct3=0,
+            A=vector.rs1_data,
+            B=vector.immediate,
         )
     elif vector.opcode == ALU_OPERATIONS["OP-IMM"]:
         return dataclasses.replace(
@@ -93,6 +112,7 @@ def format_vector(vector: Vector):
             f"0x{vector.rs1_data:08X}",
             f"0x{vector.rs2_data:08X}",
             f"0x{vector.immediate:08X}",
+            f"0x{vector.curr_pc:08X}",
             f"{vector.special_bit:1b}",
             f"{vector.is_R:1b}",
             f"{vector.funct3:03b}",
@@ -107,7 +127,7 @@ def write_vectors(stream: TextIO, vectors: Iterable[Vector], seed: int):
         (
             "# RV32I ALU Controller Test Vectors\n",
             f"# Reproducable seed: {seed}\n",
-            "opcode[7] funct3_in[3] funct7[7] rs1_data[32] rs2_data[32] immediate[32] ",
+            "opcode[7] funct3_in[3] funct7[7] rs1_data[32] rs2_data[32] immediate[32] curr_pc[32] ",
             "special_bit[1] is_R[1] funct3[3] A[32] B[32]\n",
         )
     )
