@@ -26,6 +26,7 @@ class Width(IntEnum):
     EIGHT = 0
     SIXTEEN = 1
     THIRTY_TWO = 2
+    INVALID = 3
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)
@@ -49,7 +50,7 @@ def generate_vectors(count: int) -> Generator[Vector]:
         output_enable = random.choices((True, False), (9, 1))[0]
         write_enable = random.choice((True, False))
         address = random.randint(0, RAM_SIZE - 1) & (0xFFFFFFFF << width)
-        write_data = random.randint(0, (1 << (1 << (width + 3)) - 1))
+        write_data = random.randint(0, 0xFFFFFFFF)
         clk = False
         output_data = 0
         yield Vector(
@@ -119,7 +120,8 @@ def process_vectors(vectors: Iterable[Vector]) -> Generator[Vector]:
                         | (ram.get(vector.address + 3, 0) << 24)
                     )
                     vector = dataclasses.replace(vector, output_data=output_data)
-
+            case Width.INVALID:  # Invalid operation make no changes and always output 0
+                vector = dataclasses.replace(vector, output_data=0)
         yield vector
 
         # All input after rise will be ignored
@@ -134,11 +136,10 @@ def process_vectors(vectors: Iterable[Vector]) -> Generator[Vector]:
         )
 
 
-
 def format_vector(vector: Vector) -> str:
     output_data: str = ""
     if (not vector.clk) or (not vector.output_enable):
-        output_data = f"0x{'x' * 8}"
+        output_data = "   <DC>   "
     else:
         output_data = f"0x{vector.output_data:08X}"
     return (
