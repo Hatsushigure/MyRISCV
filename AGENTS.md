@@ -1,0 +1,2 @@
+- logisim-evolution locates in `C:\Program Files\logisim-evolution\`
+- logisim cli needs to be run with .jar file. .exe executable cannot process args
