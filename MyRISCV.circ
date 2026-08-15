@@ -4366,7 +4366,7 @@
       <circ-port dir="in" pin="650,720" x="40" y="70"/>
       <circ-port dir="in" pin="650,750" x="40" y="80"/>
       <circ-port dir="in" pin="650,810" x="40" y="90"/>
-      <circ-port dir="in" pin="650,850" x="40" y="120"/>
+      <circ-port dir="in" pin="650,850" x="40" y="100"/>
       <circ-port dir="in" pin="650,880" x="40" y="110"/>
       <circ-port dir="in" pin="670,690" x="40" y="60"/>
       <circ-port dir="out" pin="800,690" x="160" y="80"/>
