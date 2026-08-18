@@ -1,0 +1,1233 @@
+{
+    "registers": {
+        "x0": "0b00000",
+        "x1": "0b00001",
+        "x2": "0b00010",
+        "x3": "0b00011",
+        "x4": "0b00100",
+        "x5": "0b00101",
+        "x6": "0b00110",
+        "x7": "0b00111",
+        "x8": "0b01000",
+        "x9": "0b01001",
+        "x10": "0b01010",
+        "x11": "0b01011",
+        "x12": "0b01100",
+        "x13": "0b01101",
+        "x14": "0b01110",
+        "x15": "0b01111",
+        "x16": "0b10000",
+        "x17": "0b10001",
+        "x18": "0b10010",
+        "x19": "0b10011",
+        "x20": "0b10100",
+        "x21": "0b10101",
+        "x22": "0b10110",
+        "x23": "0b10111",
+        "x24": "0b11000",
+        "x25": "0b11001",
+        "x26": "0b11010",
+        "x27": "0b11011",
+        "x28": "0b11100",
+        "x29": "0b11101",
+        "x30": "0b11110",
+        "x31": "0b11111"
+    },
+    "templates": {
+        "U": {
+            "arguments": {
+                "opcode": 7,
+                "rd": 5,
+                "immediate": 32
+            },
+            "output": {
+                "bits": 32,
+                "slices": [
+                    {
+                        "source": "opcode",
+                        "source_begin": 0,
+                        "source_end": 7
+                    },
+                    {
+                        "source": "rd",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "immediate",
+                        "source_begin": 12,
+                        "source_end": 32
+                    }
+                ]
+            }
+        },
+        "J": {
+            "arguments": {
+                "opcode": 7,
+                "rd": 5,
+                "immediate": 21
+            },
+            "output": {
+                "bits": 32,
+                "slices": [
+                    {
+                        "source": "opcode",
+                        "source_begin": 0,
+                        "source_end": 7
+                    },
+                    {
+                        "source": "rd",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "immediate",
+                        "source_begin": 12,
+                        "source_end": 20
+                    },
+                    {
+                        "source": "immediate",
+                        "source_begin": 11,
+                        "source_end": 12
+                    },
+                    {
+                        "source": "immediate",
+                        "source_begin": 1,
+                        "source_end": 11
+                    },
+                    {
+                        "source": "immediate",
+                        "source_begin": 20,
+                        "source_end": 21
+                    }
+                ]
+            }
+        },
+        "I": {
+            "arguments": {
+                "opcode": 7,
+                "rd": 5,
+                "funct3": 3,
+                "rs1": 5,
+                "immediate": 12
+            },
+            "output": {
+                "bits": 32,
+                "slices": [
+                    {
+                        "source": "opcode",
+                        "source_begin": 0,
+                        "source_end": 7
+                    },
+                    {
+                        "source": "rd",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "funct3",
+                        "source_begin": 0,
+                        "source_end": 3
+                    },
+                    {
+                        "source": "rs1",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "immediate",
+                        "source_begin": 0,
+                        "source_end": 12
+                    }
+                ]
+            }
+        },
+        "B": {
+            "arguments": {
+                "opcode": 7,
+                "funct3": 3,
+                "rs1": 5,
+                "rs2": 5,
+                "immediate": 13
+            },
+            "output": {
+                "bits": 32,
+                "slices": [
+                    {
+                        "source": "opcode",
+                        "source_begin": 0,
+                        "source_end": 7
+                    },
+                    {
+                        "source": "immediate",
+                        "source_begin": 11,
+                        "source_end": 12
+                    },
+                    {
+                        "source": "immediate",
+                        "source_begin": 1,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "funct3",
+                        "source_begin": 0,
+                        "source_end": 3
+                    },
+                    {
+                        "source": "rs1",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "rs2",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "immediate",
+                        "source_begin": 5,
+                        "source_end": 11
+                    },
+                    {
+                        "source": "immediate",
+                        "source_begin": 12,
+                        "source_end": 13
+                    }
+                ]
+            }
+        },
+        "S": {
+            "arguments": {
+                "opcode": 7,
+                "funct3": 3,
+                "rs1": 5,
+                "rs2": 5,
+                "immediate": 12
+            },
+            "output": {
+                "bits": 32,
+                "slices": [
+                    {
+                        "source": "opcode",
+                        "source_begin": 0,
+                        "source_end": 7
+                    },
+                    {
+                        "source": "immediate",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "funct3",
+                        "source_begin": 0,
+                        "source_end": 3
+                    },
+                    {
+                        "source": "rs1",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "rs2",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "immediate",
+                        "source_begin": 5,
+                        "source_end": 12
+                    }
+                ]
+            }
+        },
+        "R": {
+            "arguments": {
+                "opcode": 7,
+                "rd": 5,
+                "funct3": 3,
+                "rs1": 5,
+                "rs2": 5,
+                "funct7": 7
+            },
+            "output": {
+                "bits": 32,
+                "slices": [
+                    {
+                        "source": "opcode",
+                        "source_begin": 0,
+                        "source_end": 7
+                    },
+                    {
+                        "source": "rd",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "funct3",
+                        "source_begin": 0,
+                        "source_end": 3
+                    },
+                    {
+                        "source": "rs1",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "rs2",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "funct7",
+                        "source_begin": 0,
+                        "source_end": 7
+                    }
+                ]
+            }
+        },
+        "I_SHIFT": {
+            "arguments": {
+                "opcode": 7,
+                "rd": 5,
+                "funct3": 3,
+                "rs1": 5,
+                "shamt": 5,
+                "funct7": 7
+            },
+            "output": {
+                "bits": 32,
+                "slices": [
+                    {
+                        "source": "opcode",
+                        "source_begin": 0,
+                        "source_end": 7
+                    },
+                    {
+                        "source": "rd",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "funct3",
+                        "source_begin": 0,
+                        "source_end": 3
+                    },
+                    {
+                        "source": "rs1",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "shamt",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "funct7",
+                        "source_begin": 0,
+                        "source_end": 7
+                    }
+                ]
+            }
+        },
+        "FENCE": {
+            "arguments": {
+                "opcode": 7,
+                "rd": 5,
+                "funct3": 3,
+                "rs1": 5,
+                "succ": 4,
+                "pred": 4,
+                "fm": 4
+            },
+            "output": {
+                "bits": 32,
+                "slices": [
+                    {
+                        "source": "opcode",
+                        "source_begin": 0,
+                        "source_end": 7
+                    },
+                    {
+                        "source": "rd",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "funct3",
+                        "source_begin": 0,
+                        "source_end": 3
+                    },
+                    {
+                        "source": "rs1",
+                        "source_begin": 0,
+                        "source_end": 5
+                    },
+                    {
+                        "source": "succ",
+                        "source_begin": 0,
+                        "source_end": 4
+                    },
+                    {
+                        "source": "pred",
+                        "source_begin": 0,
+                        "source_end": 4
+                    },
+                    {
+                        "source": "fm",
+                        "source_begin": 0,
+                        "source_end": 4
+                    }
+                ]
+            }
+        }
+    },
+    "instructions": {
+        "lui": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 32
+                }
+            },
+            "template": "U",
+            "template_binds": {
+                "opcode": "0b0110111",
+                "rd": "rd",
+                "immediate": "immediate"
+            }
+        },
+        "auipc": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 32
+                }
+            },
+            "template": "U",
+            "template_binds": {
+                "opcode": "0b0010111",
+                "rd": "rd",
+                "immediate": "immediate"
+            }
+        },
+        "jal": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 21
+                }
+            },
+            "template": "J",
+            "template_binds": {
+                "opcode": "0b1101111",
+                "rd": "rd",
+                "immediate": "immediate"
+            }
+        },
+        "jalr": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 12
+                }
+            },
+            "template": "I",
+            "template_binds": {
+                "opcode": "0b1100111",
+                "rd": "rd",
+                "funct3": "0b000",
+                "rs1": "rs1",
+                "immediate": "immediate"
+            }
+        },
+        "beq": {
+            "arguments": {
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 13
+                }
+            },
+            "template": "B",
+            "template_binds": {
+                "opcode": "0b1100011",
+                "funct3": "0b000",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "immediate": "immediate"
+            }
+        },
+        "bne": {
+            "arguments": {
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 13
+                }
+            },
+            "template": "B",
+            "template_binds": {
+                "opcode": "0b1100011",
+                "funct3": "0b001",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "immediate": "immediate"
+            }
+        },
+        "blt": {
+            "arguments": {
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 13
+                }
+            },
+            "template": "B",
+            "template_binds": {
+                "opcode": "0b1100011",
+                "funct3": "0b100",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "immediate": "immediate"
+            }
+        },
+        "bge": {
+            "arguments": {
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 13
+                }
+            },
+            "template": "B",
+            "template_binds": {
+                "opcode": "0b1100011",
+                "funct3": "0b101",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "immediate": "immediate"
+            }
+        },
+        "bltu": {
+            "arguments": {
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 13
+                }
+            },
+            "template": "B",
+            "template_binds": {
+                "opcode": "0b1100011",
+                "funct3": "0b110",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "immediate": "immediate"
+            }
+        },
+        "bgeu": {
+            "arguments": {
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 13
+                }
+            },
+            "template": "B",
+            "template_binds": {
+                "opcode": "0b1100011",
+                "funct3": "0b111",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "immediate": "immediate"
+            }
+        },
+        "lb": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 12
+                }
+            },
+            "template": "I",
+            "template_binds": {
+                "opcode": "0b0000011",
+                "rd": "rd",
+                "funct3": "0b000",
+                "rs1": "rs1",
+                "immediate": "immediate"
+            }
+        },
+        "lh": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 12
+                }
+            },
+            "template": "I",
+            "template_binds": {
+                "opcode": "0b0000011",
+                "rd": "rd",
+                "funct3": "0b001",
+                "rs1": "rs1",
+                "immediate": "immediate"
+            }
+        },
+        "lw": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 12
+                }
+            },
+            "template": "I",
+            "template_binds": {
+                "opcode": "0b0000011",
+                "rd": "rd",
+                "funct3": "0b010",
+                "rs1": "rs1",
+                "immediate": "immediate"
+            }
+        },
+        "lbu": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 12
+                }
+            },
+            "template": "I",
+            "template_binds": {
+                "opcode": "0b0000011",
+                "rd": "rd",
+                "funct3": "0b100",
+                "rs1": "rs1",
+                "immediate": "immediate"
+            }
+        },
+        "lhu": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 12
+                }
+            },
+            "template": "I",
+            "template_binds": {
+                "opcode": "0b0000011",
+                "rd": "rd",
+                "funct3": "0b101",
+                "rs1": "rs1",
+                "immediate": "immediate"
+            }
+        },
+        "sb": {
+            "arguments": {
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 12
+                }
+            },
+            "template": "S",
+            "template_binds": {
+                "opcode": "0b0100011",
+                "funct3": "0b000",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "immediate": "immediate"
+            }
+        },
+        "sh": {
+            "arguments": {
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 12
+                }
+            },
+            "template": "S",
+            "template_binds": {
+                "opcode": "0b0100011",
+                "funct3": "0b001",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "immediate": "immediate"
+            }
+        },
+        "sw": {
+            "arguments": {
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 12
+                }
+            },
+            "template": "S",
+            "template_binds": {
+                "opcode": "0b0100011",
+                "funct3": "0b010",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "immediate": "immediate"
+            }
+        },
+        "addi": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 12
+                }
+            },
+            "template": "I",
+            "template_binds": {
+                "opcode": "0b0010011",
+                "rd": "rd",
+                "funct3": "0b000",
+                "rs1": "rs1",
+                "immediate": "immediate"
+            }
+        },
+        "slti": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 12
+                }
+            },
+            "template": "I",
+            "template_binds": {
+                "opcode": "0b0010011",
+                "rd": "rd",
+                "funct3": "0b010",
+                "rs1": "rs1",
+                "immediate": "immediate"
+            }
+        },
+        "sltiu": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 12
+                }
+            },
+            "template": "I",
+            "template_binds": {
+                "opcode": "0b0010011",
+                "rd": "rd",
+                "funct3": "0b011",
+                "rs1": "rs1",
+                "immediate": "immediate"
+            }
+        },
+        "xori": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 12
+                }
+            },
+            "template": "I",
+            "template_binds": {
+                "opcode": "0b0010011",
+                "rd": "rd",
+                "funct3": "0b100",
+                "rs1": "rs1",
+                "immediate": "immediate"
+            }
+        },
+        "ori": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 12
+                }
+            },
+            "template": "I",
+            "template_binds": {
+                "opcode": "0b0010011",
+                "rd": "rd",
+                "funct3": "0b110",
+                "rs1": "rs1",
+                "immediate": "immediate"
+            }
+        },
+        "andi": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "immediate": {
+                    "type": "constant",
+                    "bits": 12
+                }
+            },
+            "template": "I",
+            "template_binds": {
+                "opcode": "0b0010011",
+                "rd": "rd",
+                "funct3": "0b111",
+                "rs1": "rs1",
+                "immediate": "immediate"
+            }
+        },
+        "slli": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "shamt": {
+                    "type": "constant",
+                    "bits": 5
+                }
+            },
+            "template": "I_SHIFT",
+            "template_binds": {
+                "opcode": "0b0010011",
+                "rd": "rd",
+                "funct3": "0b001",
+                "rs1": "rs1",
+                "shamt": "shamt",
+                "funct7": "0b0000000"
+            }
+        },
+        "srli": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "shamt": {
+                    "type": "constant",
+                    "bits": 5
+                }
+            },
+            "template": "I_SHIFT",
+            "template_binds": {
+                "opcode": "0b0010011",
+                "rd": "rd",
+                "funct3": "0b101",
+                "rs1": "rs1",
+                "shamt": "shamt",
+                "funct7": "0b0000000"
+            }
+        },
+        "srai": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "shamt": {
+                    "type": "constant",
+                    "bits": 5
+                }
+            },
+            "template": "I_SHIFT",
+            "template_binds": {
+                "opcode": "0b0010011",
+                "rd": "rd",
+                "funct3": "0b101",
+                "rs1": "rs1",
+                "shamt": "shamt",
+                "funct7": "0b0100000"
+            }
+        },
+        "add": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                }
+            },
+            "template": "R",
+            "template_binds": {
+                "opcode": "0b0110011",
+                "rd": "rd",
+                "funct3": "0b000",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "funct7": "0b0000000"
+            }
+        },
+        "sub": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                }
+            },
+            "template": "R",
+            "template_binds": {
+                "opcode": "0b0110011",
+                "rd": "rd",
+                "funct3": "0b000",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "funct7": "0b0100000"
+            }
+        },
+        "sll": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                }
+            },
+            "template": "R",
+            "template_binds": {
+                "opcode": "0b0110011",
+                "rd": "rd",
+                "funct3": "0b001",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "funct7": "0b0000000"
+            }
+        },
+        "slt": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                }
+            },
+            "template": "R",
+            "template_binds": {
+                "opcode": "0b0110011",
+                "rd": "rd",
+                "funct3": "0b010",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "funct7": "0b0000000"
+            }
+        },
+        "sltu": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                }
+            },
+            "template": "R",
+            "template_binds": {
+                "opcode": "0b0110011",
+                "rd": "rd",
+                "funct3": "0b011",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "funct7": "0b0000000"
+            }
+        },
+        "xor": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                }
+            },
+            "template": "R",
+            "template_binds": {
+                "opcode": "0b0110011",
+                "rd": "rd",
+                "funct3": "0b100",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "funct7": "0b0000000"
+            }
+        },
+        "srl": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                }
+            },
+            "template": "R",
+            "template_binds": {
+                "opcode": "0b0110011",
+                "rd": "rd",
+                "funct3": "0b101",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "funct7": "0b0000000"
+            }
+        },
+        "sra": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                }
+            },
+            "template": "R",
+            "template_binds": {
+                "opcode": "0b0110011",
+                "rd": "rd",
+                "funct3": "0b101",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "funct7": "0b0100000"
+            }
+        },
+        "or": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                }
+            },
+            "template": "R",
+            "template_binds": {
+                "opcode": "0b0110011",
+                "rd": "rd",
+                "funct3": "0b110",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "funct7": "0b0000000"
+            }
+        },
+        "and": {
+            "arguments": {
+                "rd": {
+                    "type": "register"
+                },
+                "rs1": {
+                    "type": "register"
+                },
+                "rs2": {
+                    "type": "register"
+                }
+            },
+            "template": "R",
+            "template_binds": {
+                "opcode": "0b0110011",
+                "rd": "rd",
+                "funct3": "0b111",
+                "rs1": "rs1",
+                "rs2": "rs2",
+                "funct7": "0b0000000"
+            }
+        },
+        "fence": {
+            "arguments": {
+                "pred": {
+                    "type": "constant",
+                    "bits": 4
+                },
+                "succ": {
+                    "type": "constant",
+                    "bits": 4
+                }
+            },
+            "template": "FENCE",
+            "template_binds": {
+                "opcode": "0b0001111",
+                "rd": "0b00000",
+                "funct3": "0b000",
+                "rs1": "0b00000",
+                "succ": "succ",
+                "pred": "pred",
+                "fm": "0b0000"
+            }
+        },
+        "ecall": {
+            "arguments": {},
+            "template": "I",
+            "template_binds": {
+                "opcode": "0b1110011",
+                "rd": "0b00000",
+                "funct3": "0b000",
+                "rs1": "0b00000",
+                "immediate": "0b000000000000"
+            }
+        },
+        "ebreak": {
+            "arguments": {},
+            "template": "I",
+            "template_binds": {
+                "opcode": "0b1110011",
+                "rd": "0b00000",
+                "funct3": "0b000",
+                "rs1": "0b00000",
+                "immediate": "0b000000000001"
+            }
+        }
+    }
+}
