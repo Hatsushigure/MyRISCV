@@ -39,6 +39,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="output binary file (default: source path with a .bin suffix)",
     )
     parser.add_argument(
+        "--split-output",
+        action="store_true",
+        help="split output into four byte-lane files (for example, program.0.bin)",
+    )
+    parser.add_argument(
         "--isa",
         type=Path,
         help="ISA definition file (default: bundled MyRISCV ISA)",
@@ -93,9 +98,20 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 1
 
     try:
-        output_path.write_bytes(binary)
+        if args.split_output:
+            for lane in range(4):
+                lane_path = output_path.with_name(
+                    f"{output_path.stem}.{lane}{output_path.suffix}"
+                )
+                lane_path.write_bytes(binary[lane::4])
+        else:
+            output_path.write_bytes(binary)
     except OSError as error:
-        _print_error(parser.prog, error, path=output_path)
+        _print_error(
+            parser.prog,
+            error,
+            path=lane_path if args.split_output else output_path,
+        )
         return 1
 
     return 0

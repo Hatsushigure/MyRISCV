@@ -57,6 +57,43 @@ class TestCli(unittest.TestCase):
             )
             self.assertEqual(output_path.read_bytes(), bytes.fromhex("37f0ffff"))
 
+    def test_splits_output_into_four_byte_lane_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source_path = Path(temp_dir) / "program.s"
+            output_path = Path(temp_dir) / "firmware.img"
+            source_path.write_text(
+                "addi x0, x0, 0\nlui x0, 0xFFFFF000\n", encoding="utf-8"
+            )
+
+            self.assertEqual(
+                main(
+                    [
+                        str(source_path),
+                        "--output",
+                        str(output_path),
+                        "--split-output",
+                    ]
+                ),
+                0,
+            )
+            self.assertFalse(output_path.exists())
+            self.assertEqual(
+                (Path(temp_dir) / "firmware.0.img").read_bytes(),
+                bytes.fromhex("1337"),
+            )
+            self.assertEqual(
+                (Path(temp_dir) / "firmware.1.img").read_bytes(),
+                bytes.fromhex("00f0"),
+            )
+            self.assertEqual(
+                (Path(temp_dir) / "firmware.2.img").read_bytes(),
+                bytes.fromhex("00ff"),
+            )
+            self.assertEqual(
+                (Path(temp_dir) / "firmware.3.img").read_bytes(),
+                bytes.fromhex("00ff"),
+            )
+
     def test_does_not_write_output_when_assembly_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             source_path = Path(temp_dir) / "invalid.s"
