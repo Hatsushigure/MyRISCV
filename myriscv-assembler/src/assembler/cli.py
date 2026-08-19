@@ -10,6 +10,15 @@ from assembler.assembly_error import AssemblyError
 from assembler.validation_error import ValidationError
 
 
+def _format_logisim_hex(data: bytes, *, row_size: int = 8) -> str:
+    address_width = max(2, len(f"{max(len(data) - 1, 0):X}"))
+    lines = ["v3.0 hex words addressed"]
+    for address in range(0, len(data), row_size):
+        words = " ".join(f"{value:02X}" for value in data[address : address + row_size])
+        lines.append(f"{address:0{address_width}X}: {words}")
+    return "\n".join(lines) + "\n"
+
+
 def _print_error(
     program: str,
     error: object,
@@ -29,19 +38,19 @@ def _print_error(
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="myriscv-assembler",
-        description="Assemble a source file into a binary file.",
+        description="Assemble a source file into a Logisim hex image.",
     )
     parser.add_argument("source", type=Path, help="assembly source file")
     parser.add_argument(
         "-o",
         "--output",
         type=Path,
-        help="output binary file (default: source path with a .bin suffix)",
+        help="output Logisim hex image (default: source path with a .hex suffix)",
     )
     parser.add_argument(
         "--split-output",
         action="store_true",
-        help="split output into four byte-lane files (for example, program.0.bin)",
+        help="split output into four byte-lane files (for example, program.0.hex)",
     )
     parser.add_argument(
         "--isa",
@@ -54,7 +63,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    output_path = args.output or args.source.with_suffix(".bin")
+    output_path = args.output or args.source.with_suffix(".hex")
     isa_error_path = args.isa
 
     try:
@@ -103,9 +112,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                 lane_path = output_path.with_name(
                     f"{output_path.stem}.{lane}{output_path.suffix}"
                 )
-                lane_path.write_bytes(binary[lane::4])
+                lane_path.write_text(
+                    _format_logisim_hex(binary[lane::4]), encoding="ascii"
+                )
         else:
-            output_path.write_bytes(binary)
+            output_path.write_text(_format_logisim_hex(binary), encoding="ascii")
     except OSError as error:
         _print_error(
             parser.prog,
