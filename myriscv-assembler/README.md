@@ -10,6 +10,9 @@ From this directory, install the package with pip:
 python -m pip install .
 ```
 
+Modules are imported from `assembler`, for example
+`from assembler.assembler import Assembler`.
+
 For development with Hatch:
 
 ```powershell

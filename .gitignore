@@ -4,3 +4,5 @@ __pycache__/
 .venv/
 *.bin
 dist/
+*.whl
+*.tar.xz

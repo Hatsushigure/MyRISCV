@@ -1,8 +1,10 @@
-from typing import Any, Self, cast
+from typing import Any, Self
 
 from assembler.enums.instruction_argument_type import InstructionArgumentType
 from assembler.instruction_argument import InstructionArgument
+from assembler.instruction_error import InstructionError
 from assembler.instruction_template import InstructionTemplate
+from assembler.validation import Validation
 
 
 class Instruction:
@@ -18,43 +20,33 @@ class Instruction:
         return self._template
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> Self:
-        arguments = data.get("arguments", None)
-        if not isinstance(arguments, dict):
-            raise TypeError("Field 'arguments' for instruction should be a map")
-
-        arguments = cast(dict[str, Any], arguments)
+    def from_dict(cls, data: dict[str, Any], *, path: str = "") -> Self:
+        arguments = Validation.require_mapping(data, "arguments", path=path)
+        arguments_path = Validation.field_path(path, "arguments")
         processed_arguments: dict[str, InstructionArgument] = {}
         for arg_name, arg_val in arguments.items():
-            if not isinstance(arg_val, dict):
-                raise TypeError("Instruction argument definition should be a map")
+            arg_path = Validation.field_path(arguments_path, arg_name)
+            arg_data = Validation.require_mapping_value(arg_val, path=arg_path)
+            processed_arguments[arg_name] = InstructionArgument.from_dict(
+                arg_data, path=arg_path
+            )
 
-            arg_val = cast(dict[str, Any], arg_val)
-            processed_arguments[arg_name] = InstructionArgument.from_dict(arg_val)
-
-        template = data.get("template", None)
-        if not isinstance(template, str):
-            raise TypeError("Field 'template' for instruction should be a string")
-
-        template = cast(str, template)
-
-        template_binds = data.get("template_binds", None)
-        if not isinstance(template_binds, dict):
-            raise TypeError("Field 'template_binds' for instruction should be a map")
-
-        template_binds = cast(dict[str, Any], template_binds)
+        template = Validation.require_string(data, "template", path=path)
+        template_binds = Validation.require_mapping(
+            data, "template_binds", path=path
+        )
+        template_binds_path = Validation.field_path(path, "template_binds")
         processed_template_binds: dict[str, str] = {}
         for arg_name, arg_source in template_binds.items():
-            if not isinstance(arg_source, str):
-                raise TypeError("Template bind source should be a string")
-
-            arg_source = cast(str, arg_source)
-            processed_template_binds[arg_name] = arg_source
+            bind_path = Validation.field_path(template_binds_path, arg_name)
+            processed_template_binds[arg_name] = Validation.require_string_value(
+                arg_source, path=bind_path
+            )
 
         result = cls()
         result._arguments = processed_arguments
         result._template = template
-        result._template_binds = template_binds
+        result._template_binds = processed_template_binds
         return result
 
     def generate_instruction(
@@ -64,11 +56,15 @@ class Instruction:
         args: list[str],
     ) -> bytes:
         if len(args) > len(self._arguments):
-            raise ValueError(f"Redundent argument '{args[len(self._arguments)]}'")
+            raise InstructionError(
+                f"Redundant argument '{args[len(self._arguments)]}'",
+                argument_index=len(self._arguments),
+            )
 
         if len(args) < len(self._arguments):
-            raise ValueError(
-                f"Missing argument '{list(self._arguments.keys())[len(args)]}'"
+            raise InstructionError(
+                f"Missing argument '{list(self._arguments.keys())[len(args)]}'",
+                argument_index=len(args),
             )
 
         processed_args: dict[str, int] = {}
@@ -76,7 +72,9 @@ class Instruction:
             if arg_definition.type == InstructionArgumentType.REGISTER:
                 arg_str = arg_str.lower()
                 if arg_str not in register_mapping:
-                    raise ValueError(f"Unknown register '{arg_str}'")
+                    raise InstructionError(
+                        f"Unknown register '{arg_str}'", argument_index=len(processed_args)
+                    )
 
                 arg_val = register_mapping[arg_str]
                 processed_args[arg_name] = arg_val
@@ -92,24 +90,27 @@ class Instruction:
                 try:
                     arg_val = int(arg_str, base=arg_base)
                 except (TypeError, ValueError):
-                    raise ValueError(
-                        f"Instruction argument '{arg_name}' should be an integral, but got '{arg_str}'"
+                    raise InstructionError(
+                        f"Instruction argument '{arg_name}' should be an integral, but got '{arg_str}'",
+                        argument_index=len(processed_args),
                     )
 
                 if arg_base == 10 and (
                     arg_val < -(1 << (arg_definition.bits - 1))
                     or arg_val > ((1 << (arg_definition.bits - 1)) - 1)
                 ):
-                    raise ValueError(
+                    raise InstructionError(
                         f"{arg_val} out of range for instruction argument "
-                        f"'{arg_name}' (max {arg_definition.bits} bits)"
+                        f"'{arg_name}' (max {arg_definition.bits} bits)",
+                        argument_index=len(processed_args),
                     )
                 elif arg_base in (2, 16) and (
                     arg_val < 0 or arg_val > ((1 << arg_definition.bits) - 1)
                 ):
-                    raise ValueError(
+                    raise InstructionError(
                         f"0x{arg_val:X} out of range for instruction argument "
-                        f"'{arg_name}' (max {arg_definition.bits} bits)"
+                        f"'{arg_name}' (max {arg_definition.bits} bits)",
+                        argument_index=len(processed_args),
                     )
 
                 arg_val = ((1 << arg_definition.bits) + arg_val) & (
@@ -121,7 +122,13 @@ class Instruction:
         for arg_name, arg_source in self._template_binds.items():
             arg_val: int = 0
             if arg_source not in processed_args:
-                arg_val = int(arg_source, base=2)
+                try:
+                    arg_val = int(arg_source, base=2)
+                except (TypeError, ValueError) as error:
+                    raise InstructionError(
+                        f"Template bind '{arg_name}' must be a binary integer, "
+                        f"but got '{arg_source}'"
+                    ) from error
             else:
                 arg_val = processed_args[arg_source]
             template_args[arg_name] = arg_val

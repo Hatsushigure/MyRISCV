@@ -1,3 +1,4 @@
 - logisim-evolution locates in `C:\Program Files\logisim-evolution\`
 - logisim cli needs to be run with .jar file. .exe executable cannot process args
 - Use python environment in `./.venv`
+- Python source files outside `scripts/` and designated entry-point files must define exactly one class. The class name must be the file name converted to PascalCase, and all methods must be defined inside that class. Split code into cohesive, responsibility-based modules as needed; do not create artificial container classes, nested classes, dynamic classes, or compatibility aliases merely to satisfy the one-class rule. Entry-point files include package `__init__.py`, `__main__.py`, and CLI adapter modules such as `cli.py`.
