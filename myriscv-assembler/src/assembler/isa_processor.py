@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -49,26 +50,36 @@ class IsaProcessor:
                 template_mapping, path=template_path
             )
 
-        instructions = Validation.require_mapping(root, "instructions", path="")
-        for inst_name, inst_def in instructions.items():
-            instruction_path = Validation.field_path("instructions", inst_name)
+        instructions = Validation.require_list(root, "instructions", path="")
+        for index, inst_def in enumerate(instructions):
+            instruction_path = Validation.field_path("instructions", index)
             instruction_mapping = Validation.require_mapping_value(
                 inst_def, path=instruction_path
             )
-            self._instructions[inst_name] = Instruction.from_dict(
+            instruction = Instruction.from_dict(
                 instruction_mapping, path=instruction_path
             )
+            if instruction.template not in self._templates:
+                raise ValidationError(
+                    Validation.field_path(instruction_path, "template"),
+                    f"references undefined template '{instruction.template}'",
+                )
+            instruction.validate_template(
+                self._templates[instruction.template], path=instruction_path
+            )
+            if instruction.name in self._instructions:
+                raise ValidationError(
+                    Validation.field_path(instruction_path, "pattern"),
+                    f"duplicates instruction name '{instruction.name}'",
+                )
+            self._instructions[instruction.name] = instruction
 
-    def generate_instruction(self, name: str, args: list[str]) -> bytes:
-        name = name.lower()
+    def generate_instruction(self, source: str) -> bytes:
+        match = re.match(r"\s*(\S+)", source)
+        name = match.group(1).lower() if match is not None else ""
         if name not in self._instructions:
             raise InstructionError(f"Undefined instruction '{name}'")
 
         instruction = self._instructions[name]
-        if instruction.template not in self._templates:
-            raise InstructionError(
-                f"Undefined template '{instruction.template}'"
-            )
-
         template = self._templates[instruction.template]
-        return instruction.generate_instruction(self._registers, template, args)
+        return instruction.generate_instruction(self._registers, template, source)

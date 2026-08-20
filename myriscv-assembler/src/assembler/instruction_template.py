@@ -15,6 +15,10 @@ class InstructionTemplate:
     def __repr__(self) -> str:
         return f"{self.__dict__}"
 
+    @property
+    def arguments(self) -> dict[str, int]:
+        return self._arguments.copy()
+
     def _int_slice(self, val: int, begin: int, end: int) -> int:
         return (val >> begin) & ((1 << (end - begin)) - 1)
 
